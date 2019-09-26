@@ -76,3 +76,34 @@ header > h1 {
   font-size: 20px;
   margin-top: 20px;
 }
+.username {
+  grid-area: un;
+  background-color: coral;
+  height: 35px;
+}
+.msg-box {
+  overflow: scroll;
+  grid-area: mb;
+  background-color: cyan;
+}
+.msg-input {
+  grid-area: mi;
+  background-color: darkorchid;
+  height: 35px;
+}
+.users-list {
+  grid-area: ul;
+  background-color: darkkhaki;
+}
+.chatbox {
+  height: 200px;
+  width: 480px;
+  display: grid;
+  grid-template-columns: 6;
+  grid-template-rows: 4;
+  grid-template-areas:
+    "ul un un un un"
+    "ul mb mb mb mb"
+    "ul mb mb mb mb"
+    "ul mi mi mi mi";
+}

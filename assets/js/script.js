@@ -13,6 +13,8 @@ $(document).ready(function() {
   var database = firebase.database();
   var playerNum = "0";
   var inGame = false;
+  var p1Choice = "0";
+  var p2Choice = "0";
   var joinBtn = $("<button>")
     .attr("class", "join")
     .text("Join Game")
@@ -58,18 +60,21 @@ $(document).ready(function() {
   joinBtn.on("click", function() {
     var playerName = nameField.val();
     inGame = true;
+    joinBtn.detach();
     player1Ref.once("value").then(function(ss) {
       if (ss.child("name").val() === null) {
         player1Ref.set({
           name: playerName,
-          inGame: inGame
+          inGame: inGame,
+          choice: "0"
         });
         playerNum = "1";
         player1Ref.onDisconnect().remove();
       } else {
         player2Ref.set({
           name: playerName,
-          inGame: inGame
+          inGame: inGame,
+          choice: "0"
         });
         playerNum = "2";
         player2Ref.onDisconnect().remove();
@@ -78,6 +83,59 @@ $(document).ready(function() {
       console.log("Joined!");
     });
   });
+
+  function checkPlayerChoice() {
+    var playersRef = database.ref("/players");
+    playersRef.on("value", function(snaps) {
+      var data = snaps.val();
+      p1Choice = data.player1.choice;
+      p2Choice = data.player2.choice;
+      console.log(p1Choice);
+      console.log(p2Choice);
+      switch (p1Choice + p2Choice) {
+        //P1 Picked & P2 Didnt
+        case "r0":
+        case "p0":
+        case "s0":
+          {
+            console.log("P1 picked | P2 didnt");
+          }
+          break;
+        //P2 Picked & P1 Didnt
+        case "0r":
+        case "0p":
+        case "0s":
+          {
+            console.log("P1 didnt | P2 picked");
+          }
+          break;
+        //TIE
+        case "rr":
+        case "pp":
+        case "ss":
+          {
+            console.log("TIE!");
+          }
+          break;
+        //P1 Wins
+        case "rs":
+        case "pr":
+        case "sp":
+          {
+            console.log("P1 WINS");
+          }
+          break;
+        //P2 Wins
+        case "sr":
+        case "rp":
+        case "ps":
+          {
+            console.log("P2 WINS");
+          }
+          break;
+      }
+    });
+  }
 
   $(".choice").on("click", function() {
     console.log("NUMBER: " + playerNum);
@@ -95,6 +153,7 @@ $(document).ready(function() {
         }
         break;
     }
+    checkPlayerChoice();
   });
   messageField.on("keypress", function(e) {
     if (e.keyCode === 13) {

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
+    <title>RPS JS Game</title>
     <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -15,23 +15,37 @@
 
   </head>
   <body>
+<header>
+  <h1> [PH] RPS H1 </h1>
+</header>
 
-<header class="header" id="fancy"></header>
+<div class="scores">
+  <div class="scoreboard" id="p1">P1</div>
+  <div class="scoreboard" id="p2">P2</div>
+  <span id="p1-score">0</span>:<span id="p2-score">0</span>
+
+</div>
+<div class="result">
+  <p>[PH]YOU WIN</p>
+</div>
+
+<div class="choices" id="NOID">
+  <div class="choice" id="r"><img src="./assets/img/rock.png"  height="160px" width="160px"/></div>
+  <div class="choice" id="p"><img src="./assets/img/paper.png"  height="160px" width="160px"/></div>
+  <div class="choice" id="s"><img src="./assets/img/scissors.png" height="160px" width="160px"/></div>
+</div>
+
+<div class="status"><ul>
+  <li>Players connected: </li>
+  <li><p type="text"
+      class= "status"
+      placeholder= "No players connected!"></p></li>
+</ul></div>
+
     <div class="" id="">
         <div class="display" id="welcome">
             <img src="./assets/img/welcome.png" height="441px" width="640px"/>
         </div>
-        <div class="choices" id="NOID">
-            <div class="rock" id="r"><img src="./assets/img/rock.png"  height="160px" width="160px"/></div>
-            <div class="paper" id="p"><img src="./assets/img/paper.png"  height="160px" width="160px"/></div>
-            <div class="scissors" id="s"><img src="./assets/img/scissors.png" height="160px" width="160px"/></div>
-        </div>
-        <div class="status"><ul>
-            <li>Players connected: </li>
-            <li><input type="text"
-                class= "status"
-                placeholder= "No players connected!"></li>
-        </ul></div>
     </div>
 
 

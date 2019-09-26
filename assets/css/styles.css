@@ -67,7 +67,7 @@ header > h1 {
 }
 .choice:hover {
   cursor: pointer;
-  background: transparent;
+  background: #618ed1;
 }
 .status {
   text-align: center;

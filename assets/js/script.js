@@ -75,8 +75,26 @@ $(document).ready(function() {
         player2Ref.onDisconnect().remove();
       }
       console.log("Player: " + playerNum);
+      console.log("Joined!");
     });
-    console.log("Joined!");
+  });
+
+  $(".choice").on("click", function() {
+    console.log("NUMBER: " + playerNum);
+    var selectedChoice = $(this).attr("id");
+    console.log("Player(" + playerNum + ") picked: " + selectedChoice);
+    switch (playerNum) {
+      case "1":
+        {
+          player1Ref.update({ choice: selectedChoice });
+        }
+        break;
+      case "2":
+        {
+          player2Ref.update({ choice: selectedChoice });
+        }
+        break;
+    }
   });
   messageField.on("keypress", function(e) {
     if (e.keyCode === 13) {

@@ -1,0 +1,25 @@
+.p1 {
+  grid-area: p1;
+  height: 150px;
+  width: 150px;
+  border: 5px solid black;
+  border-radius: 25%;
+  padding: 15px;
+  margin: auto;
+}
+.p2 {
+  grid-area: p2;
+  height: 150px;
+  width: 150px;
+  border: 5px solid black;
+  border-radius: 25%;
+  padding: 15px;
+  margin: auto;
+}
+#anime-box {
+  width: 350px;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-row: 1;
+  grid-template-areas: "p1 p2";
+}

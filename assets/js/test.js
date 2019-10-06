@@ -54,6 +54,36 @@ $(document).ready(function() {
   var player2Ref = database.ref("/players/player2");
   var readyRef = database.ref("/players/ready");
   var chatRef = database.ref("/chat");
+  var choiceBox = $("#c-box");
+  function result() {
+    choiceBox.detach();
+    readyRef.set(false);
+    $(".p1").css("border", "0px solid black");
+    $(".p2").css("border", "0px solid black");
+
+    anime({
+      targets: [".p1", ".p2"],
+      translateY: [{ value: 200, duration: 300 }],
+      direction: "alternate",
+      loop: 6,
+      easing: "linear"
+    });
+  }
+
+  function show() {
+    $(".l").attr("src", "./assets/img/scis-l.png");
+    $(".p1").css({
+      border: "5px solid black",
+      background: "lime"
+    });
+    $(".r").attr("src", "./assets/img/paper-r.png");
+    $(".p2").css({
+      border: "5px solid black",
+      background: "red"
+    });
+    choiceBox.appendTo(".choices");
+  }
+
   function joinGame() {
     joinBtn.appendTo(".users-list");
     joinBtn.on("click", function() {
@@ -69,8 +99,8 @@ $(document).ready(function() {
           });
           playerNum = "1";
           $(".p1-scoreboard").css("background", "orange");
-          choice();
           player1Ref.onDisconnect().remove();
+          readyRef.onDisconnect().remove();
         } else {
           player2Ref.set({
             name: playerName,
@@ -80,50 +110,73 @@ $(document).ready(function() {
           });
           playerNum = "2";
           $(".p2-scoreboard").css("background", "orange");
-          choice();
           player2Ref.onDisconnect().remove();
+          readyRef.onDisconnect().remove();
         }
         console.log("Player: " + playerNum);
         console.log("Joined!");
+        choice();
       });
     });
   }
   function choice() {
-    $(".choice").on("click", function() {
-      console.log("NUMBER: " + playerNum);
-      var selectedChoice = $(this).attr("id");
-      console.log("Player(" + playerNum + ") picked: " + selectedChoice);
-      if (playerNum === "1") {
-        player1Ref.update({
-          picked: true,
-          choice: selectedChoice,
-          ready: true
-        });
-      } else {
-        player2Ref.update({
-          picked: true,
-          choice: selectedChoice,
-          ready: true
-        });
-      }
+    playersRef.on("value", function(ss) {
+      var data = ss.val();
+      console.log(data);
+      $(".choice").on("click", function() {
+        console.log("NUMBER: " + playerNum);
+        var selectedChoice = $(this).attr("id");
+        console.log("Player(" + playerNum + ") picked: " + selectedChoice);
+        if (playerNum === "1") {
+          player1Ref.update({
+            picked: true,
+            choice: selectedChoice,
+            ready: true
+          });
+          if (data.player2 === undefined) {
+          } else if (data.player2.ready === true) {
+            readyRef.set(true);
+          } else {
+            console.log("P2 !rdy");
+          }
+        } else {
+          player2Ref.update({
+            picked: true,
+            choice: selectedChoice,
+            ready: true
+          });
+          if (data.player1.ready === true) {
+            readyRef.set(true);
+          } else {
+            console.log("P1 !rdy");
+          }
+        }
+      });
     });
-    checkConditions();
   }
-  function checkConditions() {
-    console.log();
-    if (
-      data.players.player1.choice !== undefined &&
-      data.players.players2.choice !== undefined
-    ) {
-      switch (data.players.player1.choice + data.players.players2.choice) {
+
+  database.ref().on("value", function(snapshot) {
+    var data = snapshot.val();
+    console.log(data);
+    joinGame();
+
+    if (data.players === undefined) {
+      console.log("DB UD");
+    } else if (data.players.ready === null) {
+      choice();
+    } else if (data.players.ready) {
+      player1Ref.update({ picked: false, ready: false });
+      player2Ref.update({ picked: false, ready: false });
+      data.players.ready = false;
+      data.players.player1.ready = false;
+      data.players.player2.ready = false;
+      switch (data.players.player1.choice + data.players.player2.choice) {
         //TIE
         case "rr":
         case "pp":
         case "ss":
           {
             console.log("TIE!");
-            player1Ref.update({ picked: false });
-            player2Ref.update({ picked: false });
           }
           break;
         //P1 Wins
@@ -132,8 +185,6 @@ $(document).ready(function() {
         case "sp":
           {
             console.log("P1 WINS");
-            player1Ref.update({ picked: false });
-            player2Ref.update({ picked: false });
           }
           break;
         //P2 Wins
@@ -142,8 +193,6 @@ $(document).ready(function() {
         case "ps":
           {
             console.log("P2 WINS");
-            player1Ref.update({ picked: false });
-            player2Ref.update({ picked: false });
           }
           break;
         case "00":
@@ -168,12 +217,11 @@ $(document).ready(function() {
           }
           break;
       }
-    }
-  }
 
-  database.ref().on("value", function(snapshot) {
-    var data = snapshot.val();
-    console.log(data);
-    joinGame();
+      player1Ref.update({ choice: "0" });
+      player2Ref.update({ choice: "0" });
+      result();
+      setTimeout(show, 2300);
+    }
   });
 });
